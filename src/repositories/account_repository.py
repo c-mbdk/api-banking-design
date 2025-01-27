@@ -1,7 +1,7 @@
 from typing import Annotated, List, Optional, Type
 
 from fastapi import Depends
-# from sqlalchemy.exc import DatabaseError
+
 from sqlmodel import select
 
 from src.db.database import DatabaseClient, get_database_client
@@ -30,7 +30,7 @@ class AccountRepository(AbstractRepository):
             accounts_list = accounts.fetchall()
 
             return self.__map_account_to_schema(accounts_list)
-    
+
     async def get_by_guid(self, guid: str) -> List[AccountOutput]:
         """
         Retrieves account by guid.
@@ -46,9 +46,7 @@ class AccountRepository(AbstractRepository):
 
             return self.__map_account_to_schema([filtered_account])
 
-    async def update(
-            self, guid: str, data: AccountUpdate
-        ) -> List[AccountOutput]:
+    async def update(self, guid: str, data: AccountUpdate) -> List[AccountOutput]:
         """
         Updates an account.
 
@@ -69,14 +67,13 @@ class AccountRepository(AbstractRepository):
 
             return self.__map_account_to_schema([account_db])
 
-
     async def delete(self, guid: str) -> bool:
         """
         Delete an account.
 
         Args:
             guid (UUID4): The ID for the account.
-        
+
         Returns:
             bool: True if deletion was successful, False otherwise.
         """
@@ -91,7 +88,6 @@ class AccountRepository(AbstractRepository):
                     f"Unexpected error in deletion of account {guid}: {str(e)}"
                 )
                 return False
-            
 
     async def account_exists_by_guid(self, guid: str) -> bool:
         """
@@ -110,12 +106,10 @@ class AccountRepository(AbstractRepository):
 
             account = account_result.fetchall()
 
-            return(bool(account))
-    
+            return bool(account)
+
     @staticmethod
-    def __map_account_to_schema(
-        accounts: List[Type[Account]]
-    ) -> List[AccountOutput]:
+    def __map_account_to_schema(accounts: List[Type[Account]]) -> List[AccountOutput]:
         """
         Map accounts to AccountOutput schema.
 
@@ -127,28 +121,29 @@ class AccountRepository(AbstractRepository):
         """
         return [
             AccountOutput(
-            guid=account.guid,
-            account_name=account.account_name,
-            status=account.status,
-            customers=[
-                CustomerOutput(
-                guid=customer.guid,
-                first_name=customer.first_name,
-                middle_names=customer.middle_names,
-                last_name=customer.last_name,
-                date_of_birth=customer.date_of_birth,
-                phone_number=customer.phone_number,
-                email_address=customer.email_address,
-                address=customer.address
-                ) for customer in account.customers
-            ]
-        )
-        for account in accounts
-    ]
+                guid=account.guid,
+                account_name=account.account_name,
+                status=account.status,
+                customers=[
+                    CustomerOutput(
+                        guid=customer.guid,
+                        first_name=customer.first_name,
+                        middle_names=customer.middle_names,
+                        last_name=customer.last_name,
+                        date_of_birth=customer.date_of_birth,
+                        phone_number=customer.phone_number,
+                        email_address=customer.email_address,
+                        address=customer.address,
+                    )
+                    for customer in account.customers
+                ],
+            )
+            for account in accounts
+        ]
 
 
 async def get_account_repository(
-        db_client: Annotated[DatabaseClient, Depends(get_database_client)]
+    db_client: Annotated[DatabaseClient, Depends(get_database_client)]
 ) -> AccountRepository:
     """Dependency provider for AccountRepository."""
     return AccountRepository(db=db_client)

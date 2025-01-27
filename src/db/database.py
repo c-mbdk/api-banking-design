@@ -1,15 +1,13 @@
-from contextlib import asynccontextmanager, AbstractAsyncContextManager
+from contextlib import AbstractAsyncContextManager, asynccontextmanager
 from typing import ClassVar, Optional
 
 from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
-from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import sessionmaker
+from sqlmodel.ext.asyncio.session import AsyncSession
 
 from src.core.settings import AppSettings, get_app_settings
 from src.logger import logger
-from src.models.banking_models import ( 
-    Account, Customer, CustomerAccountLink, SQLModel
-)
+from src.models.banking_models import Account, Customer, CustomerAccountLink, SQLModel
 
 _DATABASE_CLIENT: Optional["DatabaseClient"] = None
 
@@ -41,26 +39,25 @@ class DatabaseClient:
             self._create_pool()
             await self._create_tables()
             self._initialised = True
-    
+
     def _create_pool(self):
         """Create session factory and connection pool for db connections."""
         self._engine = create_async_engine(
-            url=self._app_settings.DATABASE_URL, 
-            echo=True
+            url=self._app_settings.DATABASE_URL, echo=True
         )
         self._session_factory = sessionmaker(
             autocommit=False,
             autoflush=False,
             bind=self._engine,
             class_=AsyncSession,
-            expire_on_commit=False
+            expire_on_commit=False,
         )
 
     async def _create_tables(self):
         """Create tables defined in the application."""
         async with self._engine.begin() as conn:
             await conn.run_sync(SQLModel.metadata.create_all)
-    
+
     @asynccontextmanager
     async def get_session(self) -> AbstractAsyncContextManager[AsyncSession]:
         """Create database session for use."""

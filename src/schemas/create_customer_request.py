@@ -17,11 +17,12 @@ class CreateCustomerRequest(BaseModel):
     Used to serialise data from the client request to create customer
     records.
     """
+
     customer_guid: str = Field(
         default=uuid4(),
         description="Unique identifier for the customer record.",
         examples=[EXAMPLE_GUID_1],
-        json_schema_extra={"pattern": UUID4_PATTERN}
+        json_schema_extra={"pattern": UUID4_PATTERN},
     )
     first_name: str = Field(
         ...,

@@ -1,9 +1,6 @@
 from fastapi import APIRouter
 
-from src.api.v1.routers import (
-    account,
-    customer
-)
+from src.api.v1.routers import account, customer
 from src.core.settings import get_app_settings
 
 settings = get_app_settings()

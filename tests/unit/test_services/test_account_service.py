@@ -24,7 +24,7 @@ class TestAccountService:
         account_service.account_repository = mock_account_repository
 
         return account_service, mock_account_repository
-    
+
     async def test_retrieve_all_success(self, account_service_with_repo):
         """Tests happy path of get all method of AccountService."""
 
@@ -44,9 +44,9 @@ class TestAccountService:
                         date_of_birth="1985-04-11",
                         phone_number="07112233445",
                         email_address="jay.nathan.bloggs@email.com",
-                        address="99 Zoo Lane, Manchester, M12 4FG"
+                        address="99 Zoo Lane, Manchester, M12 4FG",
                     )
-                ]
+                ],
             )
         ]
 
@@ -59,14 +59,13 @@ class TestAccountService:
             "status_code": 200,
             "success": "true",
             "message": "Available account data returned",
-            "data": [account.model_dump_json() for account in mock_repo_output]
+            "data": [account.model_dump_json() for account in mock_repo_output],
         }
 
         for field in expected_response_attrs.keys():
             assert getattr(all_accounts, field) == expected_response_attrs[field]
 
         mock_account_repository.get_all.assert_called_once()
-
 
     async def test_retrieve_single_account_success(self, account_service_with_repo):
         """Tests happy path of get_account method of AccountService."""
@@ -92,7 +91,7 @@ class TestAccountService:
                         email_address="jonathan.thomas.bloggs@email.com",
                         address="100 East Street, Liverpool, L1 0RT",
                     )
-                ]
+                ],
             )
         ]
 
@@ -106,13 +105,12 @@ class TestAccountService:
             "status_code": 200,
             "success": "true",
             "message": "Available account data returned",
-            "data": [account.model_dump_json() for account in mock_repo_output]
+            "data": [account.model_dump_json() for account in mock_repo_output],
         }
         for field in expected_response_attrs.keys():
             assert getattr(retrieved_account, field) == expected_response_attrs[field]
-        
-        mock_account_repository.get_by_guid.assert_called_once()
 
+        mock_account_repository.get_by_guid.assert_called_once()
 
     async def test_retrieve_single_account_failure(self, account_service_with_repo):
         """Tests unhappy path of get_account method of AccountService."""
@@ -135,7 +133,6 @@ class TestAccountService:
         mock_account_repository.account_exists_by_guid.assert_called_once()
         mock_account_repository.get_by_guid.assert_not_called()
 
-    
     async def test_delete_account_success(self, account_service_with_repo):
         """Tests happy path of delete method of AccountService."""
 
@@ -154,7 +151,7 @@ class TestAccountService:
             "status_code": 200,
             "success": "true",
             "message": "Account record deleted",
-            "data": []
+            "data": [],
         }
 
         for field in expected_response_attrs.keys():
@@ -163,7 +160,6 @@ class TestAccountService:
         mock_account_repository.delete.assert_called_once()
         mock_account_repository.account_exists_by_guid.assert_called_once()
 
-    
     async def test_delete_account_not_found(self, account_service_with_repo):
         """
         Tests unhappy path of delete method of AccountService - nonexistent account.
@@ -187,7 +183,6 @@ class TestAccountService:
         mock_account_repository.account_exists_by_guid.assert_called_once()
         mock_account_repository.delete.assert_not_called()
 
-    
     async def test_delete_account_failure_server_error(self, account_service_with_repo):
         """
         Tests unhappy path of delete method of AccountService - deletion fails.
@@ -208,7 +203,7 @@ class TestAccountService:
             "status_code": 500,
             "success": "false",
             "message": f"Account record not deleted: {test_account_guid}",
-            "data": []
+            "data": [],
         }
 
         for field in expected_response_attrs.keys():
@@ -217,7 +212,6 @@ class TestAccountService:
         mock_account_repository.account_exists_by_guid.assert_called_once()
         mock_account_repository.delete.assert_called_once()
 
-    
     async def test_update_account_success(self, account_service_with_repo):
         """Tests happy path of update method of AccountService."""
 
@@ -242,22 +236,20 @@ class TestAccountService:
                         email_address="jason.andrew.bloggs@email.com",
                         address="101 Moors Street, Derby, DE1 3PT",
                     )
-                ]
+                ],
             )
         ]
 
         mock_account_repository.account_exists_by_guid.return_value = True
         mock_account_repository.update.return_value = mock_repo_output
 
-        update_data = AccountUpdate(
-            account_name="Current Account - J.A. Bloggs"
-        )
+        update_data = AccountUpdate(account_name="Current Account - J.A. Bloggs")
 
         expected_resp_attrs = {
             "status_code": 200,
             "success": "true",
             "message": "Account record updated",
-            "data": [account.model_dump_json() for account in mock_repo_output]
+            "data": [account.model_dump_json() for account in mock_repo_output],
         }
 
         updated_account_resp = await account_service.update(
@@ -274,10 +266,7 @@ class TestAccountService:
         mock_account_repository.update.assert_called_once()
         mock_account_repository.account_exists_by_guid.assert_called_once()
 
-
-    async def test_get_account_service_provider(
-        self, mock_account_repository
-    ):
+    async def test_get_account_service_provider(self, mock_account_repository):
         """Tests dependency provider for AccountRepository."""
 
         account_service = await get_account_service(mock_account_repository)

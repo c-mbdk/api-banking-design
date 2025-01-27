@@ -10,6 +10,7 @@ class AccountInput(AccountBase):
 
     Used to ensure valid account data is saved in the db.
     """
+
     pass
 
     model_config = ConfigDict(**CommonRestModelConfig.__dict__, title="AccountInput")

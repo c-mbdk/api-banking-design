@@ -1,15 +1,12 @@
-from typing import Optional
 import os
 from pathlib import Path
+from typing import Optional
 
 from dotenv import load_dotenv
 
 from src.logger import logger
 
 _APP_SETTINGS: Optional["AppSettings"] = None
-
-
-
 
 
 class AppSettings:
@@ -25,7 +22,6 @@ class AppSettings:
         self.DATABASE_URL = os.getenv("DATABASE_URL")
         self.API_VERSION = os.getenv("API_VERSION")
         self.API_V1_STR = f"/api/{self.API_VERSION}"
-
 
     DEBUG: bool = os.getenv("DEBUG", "True").lower()
     TITLE: str = "BankingApp"

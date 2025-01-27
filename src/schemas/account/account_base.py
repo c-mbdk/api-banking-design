@@ -12,21 +12,18 @@ class AccountBase(BaseModel):
     """
     Base for Account Data Transfer Objects (DTOs).
     """
-    guid: str= Field(
+
+    guid: str = Field(
         default=uuid4(),
         description="Unique identifer for the account record",
         examples=[EXAMPLE_GUID_1, EXAMPLE_GUID_2],
-        json_schema_extra={"pattern": UUID4_PATTERN}
+        json_schema_extra={"pattern": UUID4_PATTERN},
     )
     account_name: str = Field(
-        ...,
-        description="Name on the account",
-        examples=["Doe FlexAccount"]
+        ..., description="Name on the account", examples=["Doe FlexAccount"]
     )
     status: AccountStatus = Field(
-        ...,
-        description="Status of the account",
-        examples=["ACTIVE", "INACTIVE"]
+        ..., description="Status of the account", examples=["ACTIVE", "INACTIVE"]
     )
 
     model_config = ConfigDict(**CommonRestModelConfig.__dict__, title="AccountBase")

@@ -1,7 +1,6 @@
 from typing import Annotated, List, Optional, Type
 
 from fastapi import Depends
-# from sqlalchemy.exc import DatabaseError
 from sqlmodel import select
 
 from src.db.database import DatabaseClient, get_database_client
@@ -13,7 +12,6 @@ from src.schemas.account.account_output import AccountOutput
 from src.schemas.customer.customer_input import CustomerInput
 from src.schemas.customer.customer_output import CustomerOutput
 from src.schemas.customer.customer_update import CustomerUpdate
-
 
 
 class CustomerRepository(AbstractAllRepository):
@@ -33,22 +31,22 @@ class CustomerRepository(AbstractAllRepository):
             customers_list = customers.fetchall()
 
             return self.__map_customer_to_schema(customers_list)
-    
+
     async def get_by_guid(self, guid: str) -> List[CustomerOutput]:
         """
         Retrieves customer by guid.
 
         Args:
             guid (str): Unique identifer for the customer record.
-        
+
         Returns:
             List[CustomerOutput]: List containing Customer record with specified guid.
         """
         async with self._db.get_session() as session:
             filtered_customer = await session.get(Customer, guid)
-            
+
             return self.__map_customer_to_schema([filtered_customer])
-    
+
     async def create(self, data: CustomerInput, account_data: AccountInput) -> Customer:
         """
         Creates a customer.
@@ -71,9 +69,7 @@ class CustomerRepository(AbstractAllRepository):
 
             return new_customer
 
-    async def update(
-            self, guid: str, data: CustomerUpdate
-        ) -> List[CustomerOutput]:
+    async def update(self, guid: str, data: CustomerUpdate) -> List[CustomerOutput]:
         """
         Updates a customer.
 
@@ -100,7 +96,7 @@ class CustomerRepository(AbstractAllRepository):
 
         Args:
             guid (str): The ID for the customer.
-        
+
         Returns:
             bool: True if deletion was successful, False otherwise.
         """
@@ -115,7 +111,7 @@ class CustomerRepository(AbstractAllRepository):
                     f"Unexpected error in deletion of customer {guid}: {str(e)}"
                 )
                 return False
-    
+
     async def customer_exists_by_guid(self, guid: str) -> bool:
         """
         Check if a customer exists by ID.
@@ -131,13 +127,13 @@ class CustomerRepository(AbstractAllRepository):
                 select(Customer).where(Customer.guid == guid)
             )
             customer = customer_result.fetchall()
-            
+
             return bool(customer)
 
     @staticmethod
     def __map_customer_to_schema(
-            customers: List[Type[Customer]]
-        ) -> List[CustomerOutput]:
+        customers: List[Type[Customer]],
+    ) -> List[CustomerOutput]:
         """
         Map customers to CustomerOutput schema:
 
@@ -161,16 +157,17 @@ class CustomerRepository(AbstractAllRepository):
                     AccountOutput(
                         guid=account.guid,
                         account_name=account.account_name,
-                        status=account.status
-                    ) for account in customer.accounts
-                ]
+                        status=account.status,
+                    )
+                    for account in customer.accounts
+                ],
             )
             for customer in customers
         ]
 
 
 async def get_customer_repository(
-        db_client: Annotated[DatabaseClient, Depends(get_database_client)]
+    db_client: Annotated[DatabaseClient, Depends(get_database_client)]
 ) -> CustomerRepository:
     """Dependency provider for CustomerRepository."""
     return CustomerRepository(db=db_client)

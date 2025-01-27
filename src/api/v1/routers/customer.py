@@ -2,10 +2,10 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends
 
-from src.services.customer_service import CustomerService, get_customer_service
 from src.schemas.base_response import GenericResponseModel
 from src.schemas.create_customer_request import CreateCustomerRequest
 from src.schemas.customer.customer_update import CustomerUpdate
+from src.services.customer_service import CustomerService, get_customer_service
 from src.utils.constants import CREATED, OK
 
 router = APIRouter(prefix="/customers", tags=["customers"])
@@ -21,7 +21,7 @@ router = APIRouter(prefix="/customers", tags=["customers"])
 )
 async def create_single_customer(
     request_body: CreateCustomerRequest,
-    customer_service: Annotated[CustomerService, Depends(get_customer_service)]
+    customer_service: Annotated[CustomerService, Depends(get_customer_service)],
 ) -> GenericResponseModel:
     """
     This endpoint handles POST requests to create a single customer.
@@ -47,7 +47,7 @@ async def create_single_customer(
 async def update_customer(
     request_body: CustomerUpdate,
     guid: str,
-    customer_service: Annotated[CustomerService, Depends(get_customer_service)]
+    customer_service: Annotated[CustomerService, Depends(get_customer_service)],
 ):
     """
     This endpoint handles PUT requests to update an existing customer.
@@ -95,8 +95,8 @@ async def get_customers(
     status_code=OK,
 )
 async def get_single_customer(
-    guid: str, 
-    customer_service: Annotated[CustomerService, Depends(get_customer_service)]
+    guid: str,
+    customer_service: Annotated[CustomerService, Depends(get_customer_service)],
 ) -> GenericResponseModel:
     """
     This endpoint handles GET requests to retrieve an existing customer.
@@ -121,7 +121,7 @@ async def get_single_customer(
 )
 async def delete_single_customer(
     guid: str,
-    customer_service: Annotated[CustomerService, Depends(get_customer_service)]
+    customer_service: Annotated[CustomerService, Depends(get_customer_service)],
 ) -> GenericResponseModel:
     """
     This endpoint handles DELETE requests to delete an existing customer.

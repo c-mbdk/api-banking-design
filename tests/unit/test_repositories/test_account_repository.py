@@ -4,7 +4,8 @@ import pytest
 
 from src.db.database import DatabaseClient
 from src.repositories.account_repository import (
-    AccountRepository, get_account_repository
+    AccountRepository,
+    get_account_repository,
 )
 from src.schemas.account.account_update import AccountUpdate
 
@@ -18,7 +19,7 @@ class TestAccountRepository:
         in_memory_db_client,
         customer_in_memory_db,
         valid_account_data,
-        valid_customer_data_two
+        valid_customer_data_two,
     ):
         """Tests happy path of get all method of AccountRepository"""
 
@@ -37,27 +38,28 @@ class TestAccountRepository:
         customer_record = account_record.customers[0]
 
         for field in [
-            "first_name", 
-            "middle_names", 
-            "last_name", 
-            "phone_number", 
-            "email_address", 
-            "address"
-            ]:
+            "first_name",
+            "middle_names",
+            "last_name",
+            "phone_number",
+            "email_address",
+            "address",
+        ]:
             assert getattr(customer_record, field) == valid_customer_data_two[0][field]
-
 
         assert str(customer_record.guid) == valid_customer_data_two[0]["guid"]
 
-        assert customer_record.date_of_birth.strftime("%Y-%m-%d") == valid_customer_data_two[0]["date_of_birth"]  # noqa
-
+        assert (
+            customer_record.date_of_birth.strftime("%Y-%m-%d")
+            == valid_customer_data_two[0]["date_of_birth"]
+        )  # noqa
 
     async def test_get_account_by_guid_success(
         self,
         in_memory_db_client,
         customer_in_memory_db,
         valid_account_data,
-        valid_customer_data_two
+        valid_customer_data_two,
     ):
         """Tests account record can be successfully retrieved with the guid."""
 
@@ -77,32 +79,28 @@ class TestAccountRepository:
         customer_record = account_record.customers[0]
 
         for field in [
-            "first_name", 
-            "middle_names", 
-            "last_name", 
-            "phone_number", 
-            "email_address", 
-            "address"
-            ]:
+            "first_name",
+            "middle_names",
+            "last_name",
+            "phone_number",
+            "email_address",
+            "address",
+        ]:
             assert getattr(customer_record, field) == valid_customer_data_two[0][field]
-
 
         assert str(customer_record.guid) == valid_customer_data_two[0]["guid"]
 
-        assert customer_record.date_of_birth.strftime("%Y-%m-%d") == valid_customer_data_two[0]["date_of_birth"]  # noqa
-    
+        assert (
+            customer_record.date_of_birth.strftime("%Y-%m-%d")
+            == valid_customer_data_two[0]["date_of_birth"]
+        )  # noqa
 
     async def test_update_account_success(
-        self,
-        in_memory_db_client,
-        customer_in_memory_db,
-        valid_account_data
+        self, in_memory_db_client, customer_in_memory_db, valid_account_data
     ):
         """Tests account record can be successfully updated."""
 
-        updated_data = {
-            "account_name": "Test Account 123"
-        }
+        updated_data = {"account_name": "Test Account 123"}
 
         data = AccountUpdate(**updated_data)
 
@@ -119,9 +117,7 @@ class TestAccountRepository:
         assert account_record.status == valid_account_data["status"]
 
     async def test_delete_account_success(
-        self,
-        in_memory_db_client,
-        customer_in_memory_db
+        self, in_memory_db_client, customer_in_memory_db
     ):
         """Tests account record successfully deleted."""
 
@@ -130,11 +126,8 @@ class TestAccountRepository:
 
         assert await account_repo.delete(existing_account_guid)
 
-    
     async def test_account_exists_by_guid_success(
-        self,
-        in_memory_db_client,
-        customer_in_memory_db
+        self, in_memory_db_client, customer_in_memory_db
     ):
         """
         Tests checking db for existing account guid will return False.
@@ -144,11 +137,8 @@ class TestAccountRepository:
 
         assert await account_repo.account_exists_by_guid(existing_account_guid)
 
-    
     async def test_account_exists_by_guid_failure(
-        self,
-        in_memory_db_client,
-        customer_in_memory_db
+        self, in_memory_db_client, customer_in_memory_db
     ):
         """
         Tests checking db for nonexistent account guid will return False.
@@ -156,8 +146,9 @@ class TestAccountRepository:
         account_repo = AccountRepository(in_memory_db_client)
         nonexistent_account_guid = "20961a8f-ccdc-4452-a301-893129d09458"
 
-        assert await account_repo.account_exists_by_guid(nonexistent_account_guid) is False  # noqa
-
+        assert (
+            await account_repo.account_exists_by_guid(nonexistent_account_guid) is False
+        )  # noqa
 
     async def test_get_account_repository_instance(self):
         """Tests dependency provider for AccountRepository."""

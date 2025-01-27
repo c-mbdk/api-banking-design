@@ -12,11 +12,12 @@ class CustomerBase(BaseModel):
     """
     Base for the Customer Data Transfer Objects (DTOs).
     """
+
     guid: str = Field(
         default=uuid4(),
         description="Unique identifer for the customer record",
         examples=[EXAMPLE_GUID_1, EXAMPLE_GUID_2],
-        json_schema_extra={"pattern": UUID4_PATTERN}
+        json_schema_extra={"pattern": UUID4_PATTERN},
     )
     first_name: str = Field(
         ...,

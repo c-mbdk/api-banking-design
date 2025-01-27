@@ -1,15 +1,3 @@
-# from src.services.customer_service import CustomerService
-
-# def get_session():
-#     """"""
-
-
-
-# async def get_customer_service():
-#     """"""
-#     return await CustomerService()
-
-
 from src.db.database import DatabaseClient
 from src.logger import logger
 

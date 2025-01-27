@@ -1,6 +1,6 @@
+import uuid
 from abc import ABC, abstractmethod
 from typing import Generic, List, TypeVar
-import uuid
 
 from sqlmodel import Session
 
@@ -12,7 +12,9 @@ from src.db.database import DatabaseClient
 class Base:
     pass
 
-ModelType = TypeVar('ModelType', bound=Base)
+
+ModelType = TypeVar("ModelType", bound=Base)
+
 
 class AbstractRepository[T](ABC):  # noqa: E999
     """
@@ -28,7 +30,6 @@ class AbstractRepository[T](ABC):  # noqa: E999
         """
         self._db = db
 
-
     @abstractmethod
     def get_by_guid(self, guid: uuid.UUID) -> ModelType:
         """
@@ -42,7 +43,6 @@ class AbstractRepository[T](ABC):  # noqa: E999
             T: The domain object.
         """
         raise NotImplementedError
-    
 
     def get_all(self) -> List[ModelType]:
         """
@@ -53,7 +53,7 @@ class AbstractRepository[T](ABC):  # noqa: E999
             List[T]: A list of domain objects
         """
         raise NotImplementedError
-    
+
     @abstractmethod
     def update(self, guid: uuid.UUID, **kwargs: object) -> None:
         """
@@ -65,7 +65,6 @@ class AbstractRepository[T](ABC):  # noqa: E999
             kwargs (object): The properties to be updated on the object
         """
         raise NotImplementedError
-    
 
     @abstractmethod
     def delete(self, guid: uuid.UUID) -> None:
@@ -76,7 +75,7 @@ class AbstractRepository[T](ABC):  # noqa: E999
             guid (uuid.UUID): The ID of the object.
         """
         raise NotImplementedError
-    
+
 
 class AbstractAllRepository(AbstractRepository):
     """
@@ -107,4 +106,3 @@ class AbstractAllRepository(AbstractRepository):
 #             session (Session): The database session.
 #         """
 #         self.session = session
-

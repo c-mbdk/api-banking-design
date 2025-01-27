@@ -1,7 +1,9 @@
 from datetime import datetime
+
 from pytz import timezone
 
-UTC = timezone('UTC')
+UTC = timezone("UTC")
+
 
 def get_current_time():
     """

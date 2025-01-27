@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 def get_enum_values(enum_class: Enum):
     """
     Ensures Enum values will match the format expected by the database.

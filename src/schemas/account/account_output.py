@@ -3,8 +3,8 @@ from typing import List
 from pydantic import ConfigDict
 
 from src.schemas.account.account_base import AccountBase
-from src.schemas.customer.customer_base import CustomerBase
 from src.schemas.common import CommonRestModelConfig
+from src.schemas.customer.customer_base import CustomerBase
 
 
 class AccountOutput(AccountBase):

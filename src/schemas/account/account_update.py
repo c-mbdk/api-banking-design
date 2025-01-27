@@ -11,5 +11,6 @@ class AccountUpdate(BaseModel):
 
     Used to serialise data sent in request for updating account records.
     """
+
     account_name: Optional[str] = None
     status: Optional[AccountStatus] = None

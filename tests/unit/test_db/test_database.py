@@ -12,7 +12,7 @@ from src.db.database import DatabaseClient
 def connection_url() -> str:
     """Fixture providing connection URL."""
     return "sqlite:///test.db"
-    
+
 
 @pytest.fixture
 def mock_engine() -> AsyncMock:
@@ -37,21 +37,21 @@ class TestDatabaseClient:
         assert db._engine is None
         assert db._session_factory is None
         assert db._app_settings is None
-    
+
     @pytest.mark.asyncio
     @patch("src.db.database.get_app_settings")
     @patch("src.db.database.create_async_engine")
     @patch("src.db.database.sessionmaker")
     @patch("src.db.database.SQLModel")
     async def test_initialise_creates_async_engine_and_tables(
-        self, 
+        self,
         mock_sqlmodel,
-        mock_sessionmaker, 
-        mock_create_engine, 
-        mock_get_app_settings, 
+        mock_sessionmaker,
+        mock_create_engine,
+        mock_get_app_settings,
         connection_url,
         mock_engine,
-        mock_session_factory
+        mock_session_factory,
     ):
         """Test initialise logic - DatabaseClient instance not initialised."""
         mock_app_settings = Mock()
@@ -66,12 +66,12 @@ class TestDatabaseClient:
         mock_sessionmaker.return_value = mock_session_factory
 
         db = DatabaseClient()
-        
+
         assert db._initialised is False
         assert db._engine is None
         assert db._session_factory is None
         assert db._app_settings is None
-        
+
         await db.initialise()
 
         assert db._engine == mock_engine
@@ -81,7 +81,6 @@ class TestDatabaseClient:
 
         mock_engine.begin.assert_called_once()
         mock_create_engine.assert_called_once_with(url=connection_url, echo=True)
-
 
     @patch("src.db.database.get_app_settings")
     @patch("src.db.database.create_async_engine")
@@ -94,7 +93,7 @@ class TestDatabaseClient:
         mock_create_engine,
         mock_get_app_settings,
         mock_engine,
-        mock_session_factory
+        mock_session_factory,
     ):
         """Tests initialise logic - DatabaseClient already initialised."""
 
@@ -116,11 +115,8 @@ class TestDatabaseClient:
         mock_sessionmaker.assert_not_called()
         mock_engine.begin.assert_not_called()
 
-
     @pytest.mark.asyncio
-    async def test_get_session_successful(
-        self, mock_session_factory
-    ):
+    async def test_get_session_successful(self, mock_session_factory):
         """Tests session creation of DatabaseClient instance."""
 
         db = DatabaseClient()

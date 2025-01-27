@@ -1,8 +1,8 @@
 from unittest.mock import AsyncMock
 
+import pytest
 from fastapi import FastAPI, HTTPException
 from httpx import ASGITransport, AsyncClient
-import pytest
 
 from src.api.v1.routers.account import router
 from src.schemas.base_response import GenericResponseModel
@@ -19,7 +19,7 @@ class TestAccountRouter:
         mock_service = AsyncMock(spec=AccountService)
 
         return mock_service
-    
+
     @pytest.fixture
     def mock_account_response(self, mock_account_customer_base):
         """Provides base mock response for AccountService."""
@@ -27,7 +27,7 @@ class TestAccountRouter:
             success="true",
             message="Available account data returned",
             status_code=200,
-            data=[mock_account_customer_base.model_dump()]
+            data=[mock_account_customer_base.model_dump()],
         )
 
     @pytest.fixture(scope="function")
@@ -45,8 +45,7 @@ class TestAccountRouter:
     async def client(self, test_app):
         """Fixture for test client."""
         async with AsyncClient(
-            transport=ASGITransport(test_app),
-            base_url=test_url
+            transport=ASGITransport(test_app), base_url=test_url
         ) as client:
             yield client
 
@@ -55,7 +54,7 @@ class TestAccountRouter:
         mock_account_service,
         client,
         mock_account_response,
-        mock_account_customer_base
+        mock_account_customer_base,
     ):
         """Tests happy path for GET /accounts."""
 
@@ -73,22 +72,26 @@ class TestAccountRouter:
         resp_data_field_list = list(mock_account_response.data[0].keys())
         resp_data_field_list.remove("customers")
         for field in resp_data_field_list:
-            assert response_json["data"][0][field] == mock_account_response.data[0][field]  # noqa
+            assert (
+                response_json["data"][0][field] == mock_account_response.data[0][field]
+            )  # noqa
 
         customer_field_list = list(mock_account_response.data[0]["customers"][0].keys())
         customer_field_list.remove("date_of_birth")
 
         for field in customer_field_list:
-            assert response_json["data"][0]["customers"][0][field] == getattr(mock_account_customer_base.customers[0], field)  # noqa
+            assert response_json["data"][0]["customers"][0][field] == getattr(
+                mock_account_customer_base.customers[0], field
+            )  # noqa
 
-        assert response_json["data"][0]["customers"][0]["date_of_birth"] == mock_account_response.data[0]["customers"][0]["date_of_birth"].strftime("%Y-%m-%d")  # noqa
-
+        assert response_json["data"][0]["customers"][0][
+            "date_of_birth"
+        ] == mock_account_response.data[0]["customers"][0]["date_of_birth"].strftime(
+            "%Y-%m-%d"
+        )  # noqa
 
     async def test_get_single_account_success(
-        self,
-        mock_account_service,
-        client,
-        mock_account_response
+        self, mock_account_service, client, mock_account_response
     ):
         """Tests happy path of GET /accounts/{guid}"""
 
@@ -98,7 +101,7 @@ class TestAccountRouter:
 
         test_account_data = {
             "guid": test_account_guid,
-            "account_name": "Current Account - John Doe"
+            "account_name": "Current Account - John Doe",
         }
 
         for key, value in test_account_data.items():
@@ -132,16 +135,24 @@ class TestAccountRouter:
         resp_data_field_list = list(mock_account_response.data[0].keys())
         resp_data_field_list.remove("customers")
         for field in resp_data_field_list:
-            assert response_json["data"][0][field] == mock_account_response.data[0][field]  # noqa
+            assert (
+                response_json["data"][0][field] == mock_account_response.data[0][field]
+            )  # noqa
 
         customer_field_list = list(test_customer_data.keys())
         customer_field_list.remove("date_of_birth")
 
         for field in customer_field_list:
-            assert response_json["data"][0]["customers"][0][field] == mock_account_response.data[0]["customers"][0][field]  # noqa
+            assert (
+                response_json["data"][0]["customers"][0][field]
+                == mock_account_response.data[0]["customers"][0][field]
+            )  # noqa
 
-        assert response_json["data"][0]["customers"][0]["date_of_birth"] == mock_account_response.data[0]["customers"][0]["date_of_birth"].strftime("%Y-%m-%d")  # noqa
-
+        assert response_json["data"][0]["customers"][0][
+            "date_of_birth"
+        ] == mock_account_response.data[0]["customers"][0]["date_of_birth"].strftime(
+            "%Y-%m-%d"
+        )  # noqa
 
     async def test_get_single_account_failure(
         self,
@@ -152,41 +163,33 @@ class TestAccountRouter:
         test_account_guid = "b9d43e4d-788e-463f-a415-eb52b105c560"
 
         mock_account_service.get_account.side_effect = HTTPException(
-            status_code=404, 
-                detail=f"Account not found: {test_account_guid}"
-            )
+            status_code=404, detail=f"Account not found: {test_account_guid}"
+        )
 
         response = await client.get(f"/accounts/{test_account_guid}")
 
         assert response.status_code == 404
-        assert response.json() == {
-            "detail": f"Account not found: {test_account_guid}"
-        }
+        assert response.json() == {"detail": f"Account not found: {test_account_guid}"}
 
-    
     async def test_update_account_successful(
-        self,
-        mock_account_service,
-        client,
-        mock_account_response
+        self, mock_account_service, client, mock_account_response
     ):
         """Tests happy path of PUT /accounts/{guid}."""
 
         test_account_guid = "2c94ad22-2c67-47b9-a88e-55abcd63ecdf"
 
-        updated_account_data = {
-            "account_name": "Current Account - Jonathan"
-        }
+        updated_account_data = {"account_name": "Current Account - Jonathan"}
 
-
-        mock_account_response.data[0]["account_name"] = updated_account_data["account_name"]  # noqa
+        mock_account_response.data[0]["account_name"] = updated_account_data[
+            "account_name"
+        ]  # noqa
 
         mock_account_service.update.return_value = mock_account_response
 
         response = await client.put(
             f"/accounts/{test_account_guid}",
             json=updated_account_data,
-            headers={'Content-Type': 'application/json'}
+            headers={"Content-Type": "application/json"},
         )
 
         assert response.status_code == 200
@@ -199,22 +202,27 @@ class TestAccountRouter:
         resp_data_field_list = list(mock_account_response.data[0].keys())
         resp_data_field_list.remove("customers")
         for field in resp_data_field_list:
-            assert response_json["data"][0][field] == mock_account_response.data[0][field]  # noqa
+            assert (
+                response_json["data"][0][field] == mock_account_response.data[0][field]
+            )  # noqa
 
         customer_field_list = list(mock_account_response.data[0]["customers"][0].keys())
         customer_field_list.remove("date_of_birth")
 
         for field in customer_field_list:
-            assert response_json["data"][0]["customers"][0][field] == mock_account_response.data[0]["customers"][0][field]  # noqa
+            assert (
+                response_json["data"][0]["customers"][0][field]
+                == mock_account_response.data[0]["customers"][0][field]
+            )  # noqa
 
-        assert response_json["data"][0]["customers"][0]["date_of_birth"] == mock_account_response.data[0]["customers"][0]["date_of_birth"].strftime("%Y-%m-%d")  # noqa
+        assert response_json["data"][0]["customers"][0][
+            "date_of_birth"
+        ] == mock_account_response.data[0]["customers"][0]["date_of_birth"].strftime(
+            "%Y-%m-%d"
+        )  # noqa
 
-    
     async def test_delete_account_successful(
-        self,
-        mock_account_service,
-        client,
-        mock_account_response
+        self, mock_account_service, client, mock_account_response
     ):
         """Tests happy path of DELETE /accounts/{guid}."""
 
@@ -223,7 +231,7 @@ class TestAccountRouter:
         updated_resp_attrs = {
             "success": "true",
             "message": "Account record deleted",
-            "data": []
+            "data": [],
         }
 
         for key, value in updated_resp_attrs.items():

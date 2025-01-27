@@ -1,6 +1,5 @@
 import http
 
-
 DEV_DB_PATH = "sqlite:///app.db"
 EXAMPLE_GUID_1 = "bf2a60a6-6322-40b3-88df-79a6631f4996"
 EXAMPLE_GUID_2 = "254e6eb6-78a5-4481-ac7a-b551de0e1b48"

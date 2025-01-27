@@ -1,12 +1,12 @@
-from datetime import date
 import json
+from datetime import date
 
 import pytest
 
 from src.enums.account_status import AccountStatus
 from src.models.banking_models import Account, Customer
-from src.schemas.base_response import GenericResponseModel
 from src.schemas.account.account_output import AccountOutput
+from src.schemas.base_response import GenericResponseModel
 from src.schemas.create_customer_request import CreateCustomerRequest
 from src.schemas.customer.customer_output import CustomerOutput
 from src.schemas.customer.customer_update import CustomerUpdate
@@ -30,7 +30,7 @@ class TestCustomerService:
 
     async def test_retrieve_all_success(self, customer_service_with_repo):
         """Tests happy path of get all method of CustomerService."""
-        
+
         customer_service, mock_customer_repository = customer_service_with_repo
 
         mock_repo_output = [
@@ -47,9 +47,9 @@ class TestCustomerService:
                     AccountOutput(
                         guid=TEST_GUID_4,
                         account_name="Current Account - Jacqueline",
-                        status=AccountStatus.ACTIVE
+                        status=AccountStatus.ACTIVE,
                     )
-                ]
+                ],
             )
         ]
 
@@ -62,13 +62,12 @@ class TestCustomerService:
             "status_code": 200,
             "success": "true",
             "message": "Available customer data returned",
-            "data": [customer.model_dump_json() for customer in mock_repo_output]
+            "data": [customer.model_dump_json() for customer in mock_repo_output],
         }
         for field in expected_response_attrs.keys():
             assert getattr(all_customers, field) == expected_response_attrs[field]
-        
-        mock_customer_repository.get_all.assert_called_once()
 
+        mock_customer_repository.get_all.assert_called_once()
 
     async def test_retrieve_single_customer_success(self, customer_service_with_repo):
         """Tests happy path of get_customer method of CustomerService"""
@@ -92,9 +91,9 @@ class TestCustomerService:
                     AccountOutput(
                         guid=test_account_guid,
                         account_name="Current Account - Jacqueline",
-                        status=AccountStatus.ACTIVE
+                        status=AccountStatus.ACTIVE,
                     )
-                ]
+                ],
             )
         ]
 
@@ -108,13 +107,12 @@ class TestCustomerService:
             "status_code": 200,
             "success": "true",
             "message": "Available customer data returned",
-            "data": [customer.model_dump_json() for customer in mock_repo_output]
+            "data": [customer.model_dump_json() for customer in mock_repo_output],
         }
         for field in expected_response_attrs.keys():
             assert getattr(retrieved_customer, field) == expected_response_attrs[field]
-        
-        mock_customer_repository.get_by_guid.assert_called_once()
 
+        mock_customer_repository.get_by_guid.assert_called_once()
 
     async def test_retrieve_single_customer_failure(self, customer_service_with_repo):
         """Tests unhappy path of get_customer method of CustomerService."""
@@ -125,18 +123,17 @@ class TestCustomerService:
 
         mock_customer_repository.customer_exists_by_guid.return_value = False
         mock_customer_repository.get_by_guid.return_value = None
-        
+
         with pytest.raises(Exception) as exc_info:
             retrieved_customer = await customer_service.get_customer(test_customer_guid)
 
             assert not isinstance(retrieved_customer, GenericResponseModel)
-        
+
         assert str(exc_info.value.detail) == f"Customer not found: {test_customer_guid}"
         assert str(exc_info.value.status_code) == "404"
 
         mock_customer_repository.customer_exists_by_guid.assert_called_once()
         mock_customer_repository.get_by_guid.assert_not_called()
-
 
     async def test_delete_customer_success(self, customer_service_with_repo):
         """Tests happy path of delete method of CustomerService."""
@@ -147,7 +144,7 @@ class TestCustomerService:
 
         mock_customer_repository.customer_exists_by_guid.return_value = True
         mock_customer_repository.delete.return_value = True
-        
+
         customer_deleted = await customer_service.delete(test_customer_guid)
 
         assert isinstance(customer_deleted, GenericResponseModel)
@@ -156,14 +153,13 @@ class TestCustomerService:
             "status_code": 200,
             "success": "true",
             "message": "Customer record deleted",
-            "data": []
+            "data": [],
         }
 
         for field in expected_response_attrs.keys():
             assert getattr(customer_deleted, field) == expected_response_attrs[field]
         mock_customer_repository.delete.assert_called_once()
         mock_customer_repository.customer_exists_by_guid.assert_called_once()
-
 
     async def test_delete_customer_not_found(self, customer_service_with_repo):
         """
@@ -176,19 +172,18 @@ class TestCustomerService:
 
         mock_customer_repository.customer_exists_by_guid.return_value = False
         mock_customer_repository.delete.return_value = None
-        
+
         with pytest.raises(Exception) as exc_info:
             customer_deleted = await customer_service.delete(test_customer_guid)
 
             assert not isinstance(customer_deleted, GenericResponseModel)
-        
+
         assert str(exc_info.value.status_code) == "404"
         assert str(exc_info.value.detail) == f"Customer not found: {test_customer_guid}"
 
         mock_customer_repository.customer_exists_by_guid.assert_called_once()
         mock_customer_repository.delete.assert_not_called()
 
-    
     async def test_delete_customer_failure_server_error(
         self, customer_service_with_repo
     ):
@@ -202,7 +197,7 @@ class TestCustomerService:
 
         mock_customer_repository.customer_exists_by_guid.return_value = True
         mock_customer_repository.delete.return_value = False
-        
+
         customer_deleted = await customer_service.delete(test_customer_guid)
 
         assert isinstance(customer_deleted, GenericResponseModel)
@@ -211,7 +206,7 @@ class TestCustomerService:
             "status_code": 500,
             "success": "false",
             "message": f"Customer record not deleted: {test_customer_guid}",
-            "data": []
+            "data": [],
         }
 
         for field in expected_response_attrs.keys():
@@ -220,7 +215,6 @@ class TestCustomerService:
         mock_customer_repository.customer_exists_by_guid.assert_called_once()
         mock_customer_repository.delete.assert_called_once()
 
-        
     async def test_update_customer_success(self, customer_service_with_repo):
         """Tests happy path of update method of CustomerService."""
 
@@ -242,9 +236,9 @@ class TestCustomerService:
                     AccountOutput(
                         guid="c1248029-11b1-49d0-ab5f-4089f53b3d20",
                         account_name="Current Account - Josephine",
-                        status=AccountStatus.ACTIVE
+                        status=AccountStatus.ACTIVE,
                     )
-                ]
+                ],
             )
         ]
 
@@ -252,15 +246,14 @@ class TestCustomerService:
         mock_customer_repository.update.return_value = mock_repo_output
 
         update_data = CustomerUpdate(
-            middle_names="Anu",
-            email_address="j.a.doe@email.com"
+            middle_names="Anu", email_address="j.a.doe@email.com"
         )
 
         expected_resp_attrs = {
             "status_code": 200,
             "success": "true",
             "message": "Customer record updated",
-            "data": [customer.model_dump_json() for customer in mock_repo_output]
+            "data": [customer.model_dump_json() for customer in mock_repo_output],
         }
 
         updated_customer_resp = await customer_service.update(
@@ -276,10 +269,9 @@ class TestCustomerService:
 
         assert customer_record["middle_names"] == "Anu"
         assert customer_record["email_address"] == "j.a.doe@email.com"
-        
+
         mock_customer_repository.update.assert_called_once()
         mock_customer_repository.customer_exists_by_guid.assert_called_once()
-
 
     async def test_update_non_existent_customer(self, customer_service_with_repo):
         """
@@ -293,9 +285,7 @@ class TestCustomerService:
         mock_customer_repository.customer_exists_by_guid.return_value = False
         mock_customer_repository.update.return_value = None
 
-        update_data = CustomerUpdate(
-            middle_names="Barbara"
-        )
+        update_data = CustomerUpdate(middle_names="Barbara")
 
         with pytest.raises(Exception) as exc_info:
             updated_customer_resp = await customer_service.update(
@@ -304,17 +294,15 @@ class TestCustomerService:
 
             assert not isinstance(updated_customer_resp, GenericResponseModel)
 
-
         assert str(exc_info.value.status_code) == "404"
         assert str(exc_info.value.detail) == f"Customer not found: {test_customer_guid}"
 
         mock_customer_repository.customer_exists_by_guid.assert_called_once()
         mock_customer_repository.update.assert_not_called()
 
-    
     async def test_create_customer_success(self, customer_service_with_repo):
         """Tests create method of CustomerService class."""
-        
+
         customer_service, mock_customer_repository = customer_service_with_repo
 
         customer_guid = "91ecf55b-12c5-4b89-827f-be06fc5dfa89"
@@ -338,11 +326,11 @@ class TestCustomerService:
             phone_number=phone_number,
             date_of_birth=date_of_birth,
             address=address,
-            accounts=[Account(
-                guid=account_guid,
-                account_name=account_name,
-                status=account_status
-            )]
+            accounts=[
+                Account(
+                    guid=account_guid, account_name=account_name, status=account_status
+                )
+            ],
         )
         mock_customer_repository.create.return_value = mock_repo_output
 
@@ -357,30 +345,27 @@ class TestCustomerService:
             "address": address,
             "account_guid": account_guid,
             "account_name": account_name,
-            "account_status": account_status
+            "account_status": account_status,
         }
 
         expected_resp = {
             "status_code": 201,
             "success": "true",
             "message": "Customer record created",
-            "data": [CustomerOutput(**mock_repo_output.model_dump()).model_dump_json()]
+            "data": [CustomerOutput(**mock_repo_output.model_dump()).model_dump_json()],
         }
 
         new_customer_resp = await customer_service.create(
             CreateCustomerRequest(**input_data)
         )
-        
+
         assert isinstance(new_customer_resp, GenericResponseModel)
         for field in expected_resp.keys():
             assert getattr(new_customer_resp, field) == expected_resp[field]
 
         mock_customer_repository.create.assert_called_once()
 
-
-    async def test_get_customer_service_provider(
-        self, mock_customer_repository
-    ):
+    async def test_get_customer_service_provider(self, mock_customer_repository):
         """Tests dependency provider for CustomerRepository."""
 
         customer_service = await get_customer_service(mock_customer_repository)

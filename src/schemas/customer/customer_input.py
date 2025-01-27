@@ -13,6 +13,7 @@ class CustomerInput(CustomerBase):
 
     Used to ensure valid customer data is saved in the db.
     """
+
     accounts: List[AccountInput] = [None]
 
     model_config = ConfigDict(**CommonRestModelConfig.__dict__, title="CustomerInput")

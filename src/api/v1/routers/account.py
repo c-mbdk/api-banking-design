@@ -2,8 +2,8 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends
 
-from src.schemas.base_response import GenericResponseModel
 from src.schemas.account.account_update import AccountUpdate
+from src.schemas.base_response import GenericResponseModel
 from src.services.account_service import AccountService, get_account_service
 from src.utils.constants import OK
 
@@ -64,12 +64,12 @@ async def get_single_account(
     description="This endpoint handles PUT requests to update a single account.",
     operation_id="update-single-account",
     response_model=GenericResponseModel,
-    status_code=OK
+    status_code=OK,
 )
 async def update_customer(
     request_body: AccountUpdate,
     guid: str,
-    account_service: Annotated[AccountService, Depends(get_account_service)]
+    account_service: Annotated[AccountService, Depends(get_account_service)],
 ):
     """
     This endpoint handles PUT requests to update an existing account.
@@ -91,11 +91,10 @@ async def update_customer(
     description="This endpoint deletes a single account.",
     operation_id="delete-single-account",
     response_model=GenericResponseModel,
-    status_code=OK
+    status_code=OK,
 )
 async def delete_single_account(
-    guid: str,
-    account_service: Annotated[AccountService, Depends(get_account_service)]
+    guid: str, account_service: Annotated[AccountService, Depends(get_account_service)]
 ) -> GenericResponseModel:
     """
     This endpoint handles DELETE requests to delete an existing account.

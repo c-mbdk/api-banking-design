@@ -1,8 +1,8 @@
 from unittest.mock import AsyncMock
 
+import pytest
 from fastapi import FastAPI, HTTPException
 from httpx import ASGITransport, AsyncClient
-import pytest
 
 from src.api.v1.routers.customer import router
 from src.schemas.base_response import GenericResponseModel
@@ -18,7 +18,7 @@ class TestCustomerRouter:
         """Provides mock customer service instance for testing."""
         mock_service = AsyncMock(spec=CustomerService)
         return mock_service
-    
+
     @pytest.fixture
     def new_customer_request_data(self, mock_customer_account_base):
         """Provides customer request data for testing POST requests."""
@@ -28,14 +28,14 @@ class TestCustomerRouter:
             "middle_names": mock_customer_account_base.middle_names,
             "last_name": mock_customer_account_base.last_name,
             "date_of_birth": mock_customer_account_base.date_of_birth.strftime(
-            "%Y-%m-%d"
+                "%Y-%m-%d"
             ),
             "phone_number": mock_customer_account_base.phone_number,
             "email_address": mock_customer_account_base.email_address,
             "address": mock_customer_account_base.address,
             "account_guid": mock_customer_account_base.accounts[0].guid,
             "account_name": mock_customer_account_base.accounts[0].account_name,
-            "status": mock_customer_account_base.accounts[0].status
+            "status": mock_customer_account_base.accounts[0].status,
         }
 
         return request_data
@@ -47,7 +47,7 @@ class TestCustomerRouter:
             success="true",
             message="Available customer data returned",
             status_code=200,
-            data=[mock_customer_account_base.model_dump()]
+            data=[mock_customer_account_base.model_dump()],
         )
 
     @pytest.fixture(scope="function")
@@ -60,13 +60,12 @@ class TestCustomerRouter:
         app.dependency_overrides[get_customer_service] = lambda: mock_customer_service
 
         return app
-    
+
     @pytest.fixture(scope="function")
     async def client(self, test_app):
         """Fixture for test client."""
         async with AsyncClient(
-            transport=ASGITransport(test_app), 
-            base_url=test_url
+            transport=ASGITransport(test_app), base_url=test_url
         ) as client:
             yield client
 
@@ -78,20 +77,17 @@ class TestCustomerRouter:
         new_customer_request_data,
     ):
         """Tests happy path for POST /customers (single)."""
-        
-        new_resp_attrs = {
-            "message": "Customer record created",
-            "status_code": 201
-        }
+
+        new_resp_attrs = {"message": "Customer record created", "status_code": 201}
         for key, value in new_resp_attrs.items():
             setattr(mock_customer_response, key, value)
 
         mock_customer_service.create.return_value = mock_customer_response
 
         response = await client.post(
-            "/customers", 
+            "/customers",
             json=new_customer_request_data,
-            headers={'Content-Type': 'application/json'}
+            headers={"Content-Type": "application/json"},
         )
 
         assert response.status_code == 201
@@ -105,27 +101,35 @@ class TestCustomerRouter:
         resp_data_field_list.remove("date_of_birth")
         resp_data_field_list.remove("accounts")
         for field in resp_data_field_list:
-            assert response_json["data"][0][field] == mock_customer_response.data[0][field]  # noqa
+            assert (
+                response_json["data"][0][field] == mock_customer_response.data[0][field]
+            )  # noqa
 
-        assert response_json["data"][0]["date_of_birth"] == mock_customer_response.data[0]["date_of_birth"].strftime("%Y-%m-%d")  # noqa
+        assert response_json["data"][0]["date_of_birth"] == mock_customer_response.data[
+            0
+        ]["date_of_birth"].strftime(
+            "%Y-%m-%d"
+        )  # noqa
 
         for field in response_json["data"][0]["accounts"][0].keys():
-            assert response_json["data"][0]["accounts"][0][field] == mock_customer_response.data[0]["accounts"][0][field]  # noqa
-
+            assert (
+                response_json["data"][0]["accounts"][0][field]
+                == mock_customer_response.data[0]["accounts"][0][field]
+            )  # noqa
 
     async def test_get_customers_success(
-        self, 
-        mock_customer_service, 
-        client, 
-        mock_customer_response, 
-        mock_customer_account_base
+        self,
+        mock_customer_service,
+        client,
+        mock_customer_response,
+        mock_customer_account_base,
     ):
         """Tests happy path for GET /customers."""
 
         mock_customer_service.get_all.return_value = mock_customer_response
 
         response = await client.get("/customers")
-        
+
         assert response.status_code == 200
 
         response_json = response.json()
@@ -137,18 +141,25 @@ class TestCustomerRouter:
         resp_data_field_list.remove("date_of_birth")
         resp_data_field_list.remove("accounts")
         for field in resp_data_field_list:
-            assert response_json["data"][0][field] == mock_customer_response.data[0][field]  # noqa
+            assert (
+                response_json["data"][0][field] == mock_customer_response.data[0][field]
+            )  # noqa
 
-        assert response_json["data"][0]["date_of_birth"] == mock_customer_response.data[0]["date_of_birth"].strftime("%Y-%m-%d")  # noqa
+        assert response_json["data"][0]["date_of_birth"] == mock_customer_response.data[
+            0
+        ]["date_of_birth"].strftime(
+            "%Y-%m-%d"
+        )  # noqa
 
         for field in response_json["data"][0]["accounts"][0].keys():
-            assert response_json["data"][0]["accounts"][0][field] == getattr(mock_customer_account_base.accounts[0], field)  # noqa
-    
+            assert response_json["data"][0]["accounts"][0][field] == getattr(
+                mock_customer_account_base.accounts[0], field
+            )  # noqa
 
     async def test_get_single_customer_success(
-        self, 
-        mock_customer_service, 
-        client, 
+        self,
+        mock_customer_service,
+        client,
         mock_customer_response,
     ):
         """Tests happy path of GET /customers/{guid}"""
@@ -174,7 +185,7 @@ class TestCustomerRouter:
         test_account_data = {
             "guid": "09d3d017-0f11-4bb4-817f-c4a4c1beb458",
             "account_name": "Current Account - Jillian Doe",
-            "status": "Active"
+            "status": "Active",
         }
 
         for key, value in test_account_data.items():
@@ -195,14 +206,21 @@ class TestCustomerRouter:
         resp_customer_data_fields.remove("date_of_birth")
         resp_customer_data_fields.remove("accounts")
         for field in resp_customer_data_fields:
-            assert response_json["data"][0][field] == mock_customer_response.data[0][field]  # noqa
+            assert (
+                response_json["data"][0][field] == mock_customer_response.data[0][field]
+            )  # noqa
 
         # Assert against the accounts returned in the customer record returned in datA
         for field in test_account_data.keys():
-            assert response_json["data"][0]["accounts"][0][field] == test_account_data[field]  # noqa
+            assert (
+                response_json["data"][0]["accounts"][0][field]
+                == test_account_data[field]
+            )  # noqa
 
-        assert response_json["data"][0]["date_of_birth"] == test_customer_data["date_of_birth"]  # noqa
-    
+        assert (
+            response_json["data"][0]["date_of_birth"]
+            == test_customer_data["date_of_birth"]
+        )  # noqa
 
     async def test_get_single_customer_failure(
         self,
@@ -213,9 +231,8 @@ class TestCustomerRouter:
         test_customer_guid = "82079432-3f80-4e09-931c-85c56ef163cc"
 
         mock_customer_service.get_customer.side_effect = HTTPException(
-            status_code=404, 
-                detail=f"Customer not found: {test_customer_guid}"
-            )
+            status_code=404, detail=f"Customer not found: {test_customer_guid}"
+        )
 
         response = await client.get(f"/customers/{test_customer_guid}")
 
@@ -224,12 +241,8 @@ class TestCustomerRouter:
             "detail": f"Customer not found: {test_customer_guid}"
         }
 
-
     async def test_update_customer_successful(
-        self,
-        mock_customer_service,
-        client,
-        mock_customer_response
+        self, mock_customer_service, client, mock_customer_response
     ):
         """Tests happy path of PUT /customers/{guid}"""
 
@@ -237,7 +250,7 @@ class TestCustomerRouter:
 
         updated_customer_data = {
             "first_name": "Janine",
-            "email_address": "janine.a.doe@email.com"
+            "email_address": "janine.a.doe@email.com",
         }
 
         for key, value in updated_customer_data.items():
@@ -250,7 +263,7 @@ class TestCustomerRouter:
         response = await client.put(
             f"/customers/{test_customer_guid}",
             json=updated_customer_data,
-            headers={'Content-Type': 'application/json'}
+            headers={"Content-Type": "application/json"},
         )
 
         assert response.status_code == 200
@@ -264,20 +277,25 @@ class TestCustomerRouter:
         resp_customer_data_fields.remove("date_of_birth")
         resp_customer_data_fields.remove("accounts")
         for field in resp_customer_data_fields:
-            assert response_json["data"][0][field] == mock_customer_response.data[0][field]  # noqa
+            assert (
+                response_json["data"][0][field] == mock_customer_response.data[0][field]
+            )  # noqa
 
         # Assert against the accounts returned in the customer record returned in datA
         for field in ["guid", "account_name", "status"]:
-            assert response_json["data"][0]["accounts"][0][field] == mock_customer_response.data[0]["accounts"][0][field]  # noqa
+            assert (
+                response_json["data"][0]["accounts"][0][field]
+                == mock_customer_response.data[0]["accounts"][0][field]
+            )  # noqa
 
-        assert response_json["data"][0]["date_of_birth"] == mock_customer_response.data[0]["date_of_birth"].strftime("%Y-%m-%d")  # noqa
-
+        assert response_json["data"][0]["date_of_birth"] == mock_customer_response.data[
+            0
+        ]["date_of_birth"].strftime(
+            "%Y-%m-%d"
+        )  # noqa
 
     async def test_delete_customer_successful(
-        self,
-        mock_customer_service,
-        client,
-        mock_customer_response
+        self, mock_customer_service, client, mock_customer_response
     ):
         """Tests happy path of DELETE /customers/{guid}."""
 
@@ -286,7 +304,7 @@ class TestCustomerRouter:
         updated_resp_attrs = {
             "success": "true",
             "message": "Customer record deleted",
-            "data": []
+            "data": [],
         }
 
         for key, value in updated_resp_attrs.items():

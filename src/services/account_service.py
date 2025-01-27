@@ -3,20 +3,21 @@ from typing import Annotated
 from fastapi import Depends, HTTPException
 
 from src.repositories.account_repository import (
-    AccountRepository, get_account_repository
+    AccountRepository,
+    get_account_repository,
 )
-from src.schemas.base_response import GenericResponseModel
 from src.schemas.account.account_update import AccountUpdate
+from src.schemas.base_response import GenericResponseModel
 from src.utils.constants import (
     INTERNAL_SERVER_ERROR,
-    NOT_FOUND, 
-    OK, 
-    SUCCESS_ACCOUNT_DATA_FOUND, 
+    NOT_FOUND,
+    OK,
+    SUCCESS_ACCOUNT_DATA_FOUND,
     SUCCESS_ACCOUNT_DELETED,
     SUCCESS_ACCOUNT_UPDATED,
-    SUCCESS_FALSE, 
-    SUCCESS_TRUE
-    )
+    SUCCESS_FALSE,
+    SUCCESS_TRUE,
+)
 
 
 class AccountService:
@@ -36,7 +37,6 @@ class AccountService:
         """
         self.account_repository = account_repository
 
-
     async def get_all(self) -> GenericResponseModel:
         """
         Retrieve all accounts.
@@ -49,11 +49,12 @@ class AccountService:
             status_code=OK,
             success=SUCCESS_TRUE,
             message=SUCCESS_ACCOUNT_DATA_FOUND,
-            data=[account.model_dump_json() for 
-                  account in await self.account_repository.get_all()
-                ]
+            data=[
+                account.model_dump_json()
+                for account in await self.account_repository.get_all()
+            ],
         )
-    
+
     async def get_account(self, guid: str) -> GenericResponseModel:
         """
         Retrieve an account by ID.
@@ -67,20 +68,19 @@ class AccountService:
         """
         if not await self.account_repository.account_exists_by_guid(guid):
             raise HTTPException(
-                status_code=NOT_FOUND,
-                detail=f"Account not found: {guid}"
+                status_code=NOT_FOUND, detail=f"Account not found: {guid}"
             )
-        
+
         return GenericResponseModel(
             status_code=OK,
             success=SUCCESS_TRUE,
             message=SUCCESS_ACCOUNT_DATA_FOUND,
             data=[
-                account.model_dump_json() for 
-                account in await self.account_repository.get_by_guid(guid)
-            ]
+                account.model_dump_json()
+                for account in await self.account_repository.get_by_guid(guid)
+            ],
         )
-    
+
     async def update(self, guid: str, data: AccountUpdate) -> GenericResponseModel:
         """
         Update an account.
@@ -95,20 +95,19 @@ class AccountService:
         """
         if not await self.account_repository.account_exists_by_guid(guid):
             raise HTTPException(
-                status_code=NOT_FOUND,
-                detail=f"Account not found: {guid}"
+                status_code=NOT_FOUND, detail=f"Account not found: {guid}"
             )
-        
+
         return GenericResponseModel(
             status_code=OK,
             success=SUCCESS_TRUE,
             message=SUCCESS_ACCOUNT_UPDATED,
             data=[
-                account.model_dump_json() for 
-                account in await self.account_repository.update(guid, data)
-            ]
+                account.model_dump_json()
+                for account in await self.account_repository.update(guid, data)
+            ],
         )
-    
+
     async def delete(self, guid: str) -> GenericResponseModel:
         """
         Delete an account.
@@ -122,8 +121,7 @@ class AccountService:
         """
         if not await self.account_repository.account_exists_by_guid(guid):
             raise HTTPException(
-                status_code=NOT_FOUND,
-                detail=f"Account not found: {guid}"
+                status_code=NOT_FOUND, detail=f"Account not found: {guid}"
             )
 
         account_deleted = await self.account_repository.delete(guid)
@@ -133,20 +131,19 @@ class AccountService:
                 status_code=INTERNAL_SERVER_ERROR,
                 success=SUCCESS_FALSE,
                 message=f"Account record not deleted: {guid}",
-                data=[]
+                data=[],
             )
-        
+
         return GenericResponseModel(
             status_code=OK,
             success=SUCCESS_TRUE,
             message=SUCCESS_ACCOUNT_DELETED,
-            data=[]
+            data=[],
         )
 
 
 async def get_account_service(
-        account_repository: Annotated[AccountRepository,
-        Depends(get_account_repository)]
-    ):
+    account_repository: Annotated[AccountRepository, Depends(get_account_repository)]
+):
     """Dependency provider for AccountService."""
     return AccountService(account_repository=account_repository)

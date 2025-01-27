@@ -9,6 +9,7 @@ class CustomerUpdate(BaseModel):
 
     Used to serialise data sent in request for updating customer records.
     """
+
     first_name: Optional[str] = None
     middle_names: Optional[str] = None
     last_name: Optional[str] = None
