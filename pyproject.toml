@@ -26,6 +26,7 @@ greenlet = "^3.1.1"
 black = "*"
 pre-commit = "^4.1.0"
 isort = "^6.0.0"
+flake8 = "^7.1.1"
 
 [build-system]
 requires = ["poetry-core"]
