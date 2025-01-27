@@ -1,0 +1,42 @@
+[tool.poetry]
+name = "src"
+version = "0.1.0"
+description = ""
+authors = []
+readme = "README.md"
+packages = [{include = "api_banking_design", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "0.115.0"
+uvicorn = "^0.32.0"
+sqlalchemy = "2.0.35"
+sqlmodel = "^0.0.22"
+pytz = "^2024.2"
+pydantic-settings = "^2.6.1"
+httpx = "^0.27.2"
+python-dotenv = "^1.0.1"
+pytest = "^8.3.3"
+asyncio = "^3.4.3"
+pytest-asyncio = "^0.25.2"
+aiosqlite = "^0.20.0"
+greenlet = "^3.1.1"
+
+[tool.poetry.group.dev.dependencies]
+black = "*"
+pre-commit = "^4.1.0"
+isort = "^6.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "function"
+asyncio_mode = "auto"
+
+[tool.isort]
+profile = "black"
+
+[tool.black]
+line-length = 88

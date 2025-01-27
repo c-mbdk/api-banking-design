@@ -1,0 +1,5 @@
+[flake8]
+ignore=
+    .git
+    __pycache__
+    dist
