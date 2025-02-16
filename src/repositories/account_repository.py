@@ -1,7 +1,6 @@
 from typing import Annotated, List, Optional, Type
 
 from fastapi import Depends
-
 from sqlmodel import select
 
 from src.db.database import DatabaseClient, get_database_client

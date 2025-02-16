@@ -16,6 +16,7 @@ def verify_db_tables(conn: AsyncConnection) -> bool:
     inspector = inspect(conn)
     return inspector.has_table("account") and inspector.has_table("customer")
 
+
 @pytest.fixture(autouse=True)
 async def new_db_client() -> DatabaseClient:
     """Fixture to provide the database client for tests."""
@@ -85,9 +86,7 @@ async def seed_db_customer_account(
 
 
 @pytest.fixture
-def valid_input_customer_account_data(
-    valid_customer_data_two, valid_account_data
-):
+def valid_input_customer_account_data(valid_customer_data_two, valid_account_data):
     """Fixture to provide valid data for POST /customers request."""
 
     return {

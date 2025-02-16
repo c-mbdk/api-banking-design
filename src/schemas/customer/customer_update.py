@@ -12,10 +12,15 @@ class CustomerUpdate(BaseModel):
     Used to serialise data sent in request for updating customer records.
     """
 
-    # first_name: Optional[str] = None
-    first_name: Annotated[Optional[str], StringConstraints(pattern=NAME_PATTERN, strict=True)] = None
-    middle_names: Annotated[Optional[str], StringConstraints(pattern=NAME_PATTERN, strict=True)] = None
-    last_name: Annotated[Optional[str], StringConstraints(pattern=NAME_PATTERN, strict=True)] = None
+    first_name: Annotated[
+        Optional[str], StringConstraints(pattern=NAME_PATTERN, strict=True)
+    ] = None
+    middle_names: Annotated[
+        Optional[str], StringConstraints(pattern=NAME_PATTERN, strict=True)
+    ] = None
+    last_name: Annotated[
+        Optional[str], StringConstraints(pattern=NAME_PATTERN, strict=True)
+    ] = None
     phone_number: Optional[str] = None
     email_address: Optional[str] = None
     address: Optional[str] = None

@@ -18,26 +18,34 @@ class CreateCustomerRequest(BaseModel):
     records.
     """
 
-    customer_guid: Annotated[str, StringConstraints(pattern=UUID4_PATTERN, strict=True)] = Field(
+    customer_guid: Annotated[
+        str, StringConstraints(pattern=UUID4_PATTERN, strict=True)
+    ] = Field(
         default=uuid4(),
         description="Unique identifier for the customer record.",
         examples=[EXAMPLE_GUID_1],
         json_schema_extra={"pattern": UUID4_PATTERN},
     )
-    first_name: Annotated[str, StringConstraints(pattern=NAME_PATTERN, strict=True)] = Field(
-        ...,
-        description="First name of the customer.",
-        examples=["Jane"],
+    first_name: Annotated[str, StringConstraints(pattern=NAME_PATTERN, strict=True)] = (
+        Field(
+            ...,
+            description="First name of the customer.",
+            examples=["Jane"],
+        )
     )
-    middle_names: Annotated[Optional[str], StringConstraints(pattern=NAME_PATTERN, strict=True)] = Field(
+    middle_names: Annotated[
+        Optional[str], StringConstraints(pattern=NAME_PATTERN, strict=True)
+    ] = Field(
         default=None,
         description="Middle names of the customer.",
         examples=["Geoffrey"],
     )
-    last_name: Annotated[str, StringConstraints(pattern=NAME_PATTERN, strict=True)] = Field(
-        ...,
-        description="Last name (surname) of the customer",
-        examples=["Doe", "Bloggs"],
+    last_name: Annotated[str, StringConstraints(pattern=NAME_PATTERN, strict=True)] = (
+        Field(
+            ...,
+            description="Last name (surname) of the customer",
+            examples=["Doe", "Bloggs"],
+        )
     )
     date_of_birth: date = Field(
         ...,
@@ -59,7 +67,9 @@ class CreateCustomerRequest(BaseModel):
         description="Customer's primary address",
         examples=["123 Baker Street, London, E12 345"],
     )
-    account_guid: Annotated[str, StringConstraints(pattern=UUID4_PATTERN, strict=True)] = Field(
+    account_guid: Annotated[
+        str, StringConstraints(pattern=UUID4_PATTERN, strict=True)
+    ] = Field(
         default=uuid4(),
         description="Unique identifier for the account.",
         examples=[EXAMPLE_GUID_1],

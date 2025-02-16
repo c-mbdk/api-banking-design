@@ -47,7 +47,6 @@ def valid_account_data():
     }
 
 
-
 @pytest.fixture
 @patch("src.db.database.get_app_settings")
 async def in_memory_db_client(mock_get_app_settings):

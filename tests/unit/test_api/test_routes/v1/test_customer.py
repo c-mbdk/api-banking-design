@@ -107,9 +107,7 @@ class TestCustomerRouter:
 
         assert response_json["data"][0]["date_of_birth"] == mock_customer_response.data[
             0
-        ]["date_of_birth"].strftime(
-            "%Y-%m-%d"
-        )
+        ]["date_of_birth"].strftime("%Y-%m-%d")
 
         for field in response_json["data"][0]["accounts"][0].keys():
             assert (
@@ -147,9 +145,7 @@ class TestCustomerRouter:
 
         assert response_json["data"][0]["date_of_birth"] == mock_customer_response.data[
             0
-        ]["date_of_birth"].strftime(
-            "%Y-%m-%d"
-        )
+        ]["date_of_birth"].strftime("%Y-%m-%d")
 
         for field in response_json["data"][0]["accounts"][0].keys():
             assert response_json["data"][0]["accounts"][0][field] == getattr(
@@ -290,9 +286,7 @@ class TestCustomerRouter:
 
         assert response_json["data"][0]["date_of_birth"] == mock_customer_response.data[
             0
-        ]["date_of_birth"].strftime(
-            "%Y-%m-%d"
-        )
+        ]["date_of_birth"].strftime("%Y-%m-%d")
 
     async def test_delete_customer_successful(
         self, mock_customer_service, client, mock_customer_response

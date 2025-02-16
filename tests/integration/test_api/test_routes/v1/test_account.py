@@ -1,8 +1,8 @@
 import json
 
+import pytest
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
-import pytest
 
 from src.api.v1.routers.account import router
 from tests.shared.constants import test_url
@@ -10,14 +10,14 @@ from tests.shared.constants import test_url
 
 class TestAccountRouter:
     """Integration test suite for the account router."""
-    
+
     @pytest.fixture(scope="function")
     def test_app(self):
         """Fixture for app configured with db."""
         app = FastAPI()
         app.include_router(router)
         return app
-    
+
     @pytest.fixture(scope="function")
     async def client(self, test_app):
         """Fixture for test client."""
@@ -38,13 +38,13 @@ class TestAccountRouter:
         response = await client.get("accounts")
 
         assert response.status_code == 200
-        
+
         response_json = response.json()
 
         expected_response = {
             "message": "Available account data returned",
             "success": "true",
-            "status_code": 200
+            "status_code": 200,
         }
 
         for field in expected_response.keys():
@@ -71,13 +71,13 @@ class TestAccountRouter:
         response = await client.get(f"/accounts/{expected_account_guid}")
 
         assert response.status_code == 200
-        
+
         response_json = response.json()
 
         expected_response = {
             "message": "Available account data returned",
             "success": "true",
-            "status_code": 200
+            "status_code": 200,
         }
 
         for field in expected_response.keys():
@@ -93,20 +93,17 @@ class TestAccountRouter:
         for field in valid_customer_data_two[0].keys():
             assert response_customer_data[field] == valid_customer_data_two[0][field]
 
-
     async def test_update_account_data_success_returns_200(
         self,
         valid_account_data,
         valid_customer_data_two,
         seed_db_customer_account,
-        client
+        client,
     ):
         """Tests happy path for PUT /accounts/{guid}."""
 
         account_guid = valid_account_data["guid"]
-        updated_account_data = {
-            "account_name": "New Account Name 1122"
-        }
+        updated_account_data = {"account_name": "New Account Name 1122"}
         valid_account_data["account_name"] = updated_account_data["account_name"]
 
         response = await client.put(
@@ -126,12 +123,8 @@ class TestAccountRouter:
         for field in valid_customer_data_two[0].keys():
             assert response_customer_data[field] == valid_customer_data_two[0][field]
 
-
     async def test_delete_valid_account_returns_200(
-        self,
-        client,
-        seed_db_customer_account,
-        valid_account_data
+        self, client, seed_db_customer_account, valid_account_data
     ):
         """Tests happy path of DELETE /accounts/{guid}."""
 
@@ -143,7 +136,7 @@ class TestAccountRouter:
             "status_code": 200,
             "success": "true",
             "message": "Account record deleted",
-            "data": []
+            "data": [],
         }
 
         assert response.status_code == 200
@@ -170,7 +163,6 @@ class TestAccountRouter:
 
         assert response_json["detail"] == f"Account not found: {test_account_guid}"
 
-
     async def test_update_invalid_account_returns_404(
         self,
         client,
@@ -180,9 +172,7 @@ class TestAccountRouter:
 
         test_account_guid = "e0196998-d220-46b3-9278-c17e23427c4c"
 
-        updated_account_data = {
-            "account_name": "New Account Name 9998"
-        }
+        updated_account_data = {"account_name": "New Account Name 9998"}
 
         response = await client.put(
             f"/accounts/{test_account_guid}",
@@ -194,7 +184,6 @@ class TestAccountRouter:
         response_json = response.json()
 
         assert response_json["detail"] == f"Account not found: {test_account_guid}"
-
 
     async def test_delete_invalid_account_returns_404(
         self,

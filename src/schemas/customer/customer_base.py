@@ -21,20 +21,26 @@ class CustomerBase(BaseModel):
         examples=[EXAMPLE_GUID_1, EXAMPLE_GUID_2],
         json_schema_extra={"pattern": UUID4_PATTERN},
     )
-    first_name: Annotated[str, StringConstraints(pattern=NAME_PATTERN, strict=True)] = Field(
-        ...,
-        description="First name of the customer",
-        examples=["Joe", "Jane"],
+    first_name: Annotated[str, StringConstraints(pattern=NAME_PATTERN, strict=True)] = (
+        Field(
+            ...,
+            description="First name of the customer",
+            examples=["Joe", "Jane"],
+        )
     )
-    middle_names: Annotated[Optional[str], StringConstraints(pattern=NAME_PATTERN, strict=True)] = Field(
+    middle_names: Annotated[
+        Optional[str], StringConstraints(pattern=NAME_PATTERN, strict=True)
+    ] = Field(
         default=None,
         description="Middle name of the customer",
         examples=["Andrew", "Anne"],
     )
-    last_name: Annotated[str, StringConstraints(pattern=NAME_PATTERN, strict=True)] = Field(
-        ...,
-        description="Last name (surname) of the customer",
-        examples=["Doe", "Bloggs"],
+    last_name: Annotated[str, StringConstraints(pattern=NAME_PATTERN, strict=True)] = (
+        Field(
+            ...,
+            description="Last name (surname) of the customer",
+            examples=["Doe", "Bloggs"],
+        )
     )
     date_of_birth: date = Field(
         ...,

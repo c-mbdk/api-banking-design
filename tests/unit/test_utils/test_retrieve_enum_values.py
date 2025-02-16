@@ -6,9 +6,9 @@ from src.utils.retrieve_enum_values import get_enum_values
 class RandomEnum(str, Enum):
     """Random enum used for testing."""
 
-    FIRST_VALUE = 'first_value'
-    SECOND_VALUE = 'second_value'
-    THIRD_VALUE = 'third_value'
+    FIRST_VALUE = "first_value"
+    SECOND_VALUE = "second_value"
+    THIRD_VALUE = "third_value"
 
 
 def test_get_enum_values():

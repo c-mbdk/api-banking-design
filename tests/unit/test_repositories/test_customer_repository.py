@@ -127,7 +127,9 @@ class TestCustomerRepository:
             "email_address",
             "address",
         ]:
-            assert getattr(new_customer_record, field) == valid_customer_data_two[1][field]
+            assert (
+                getattr(new_customer_record, field) == valid_customer_data_two[1][field]
+            )
 
         assert str(new_customer_record.guid) == valid_customer_data_two[1]["guid"]
 

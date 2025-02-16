@@ -10,10 +10,10 @@ def test_valid_customer_created_with_account(valid_account_data, valid_customer_
     account_data["customers"] = [new_customer]
 
     new_account = Account(**account_data)
-    
+
     field_list = list(account_data.keys())
     field_list.remove("customers")
-    
+
     for field in field_list:
         assert getattr(new_account, field) == account_data[field]
 
