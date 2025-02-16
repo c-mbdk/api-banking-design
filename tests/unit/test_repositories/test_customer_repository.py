@@ -115,8 +115,9 @@ class TestCustomerRepository:
 
         customer_repo = CustomerRepository(in_memory_db_client)
         new_customer = await customer_repo.create(customer_data, account_data)
+        new_customer_record = new_customer[0]
 
-        assert new_customer != customer_in_memory_db
+        assert new_customer_record != customer_in_memory_db
 
         for field in [
             "first_name",
@@ -126,16 +127,16 @@ class TestCustomerRepository:
             "email_address",
             "address",
         ]:
-            assert getattr(new_customer, field) == valid_customer_data_two[1][field]
+            assert getattr(new_customer_record, field) == valid_customer_data_two[1][field]
 
-        assert str(new_customer.guid) == valid_customer_data_two[1]["guid"]
+        assert str(new_customer_record.guid) == valid_customer_data_two[1]["guid"]
 
         assert (
-            new_customer.date_of_birth.strftime("%Y-%m-%d")
+            new_customer_record.date_of_birth.strftime("%Y-%m-%d")
             == valid_customer_data_two[1]["date_of_birth"]
         )  # noqa
 
-        account_record = new_customer.accounts[0]
+        account_record = new_customer_record.accounts[0]
 
         for field in ["account_name", "status"]:
             assert getattr(account_record, field) == new_account_data[field]

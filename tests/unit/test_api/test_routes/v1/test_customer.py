@@ -103,19 +103,19 @@ class TestCustomerRouter:
         for field in resp_data_field_list:
             assert (
                 response_json["data"][0][field] == mock_customer_response.data[0][field]
-            )  # noqa
+            )
 
         assert response_json["data"][0]["date_of_birth"] == mock_customer_response.data[
             0
         ]["date_of_birth"].strftime(
             "%Y-%m-%d"
-        )  # noqa
+        )
 
         for field in response_json["data"][0]["accounts"][0].keys():
             assert (
                 response_json["data"][0]["accounts"][0][field]
                 == mock_customer_response.data[0]["accounts"][0][field]
-            )  # noqa
+            )
 
     async def test_get_customers_success(
         self,
@@ -143,18 +143,18 @@ class TestCustomerRouter:
         for field in resp_data_field_list:
             assert (
                 response_json["data"][0][field] == mock_customer_response.data[0][field]
-            )  # noqa
+            )
 
         assert response_json["data"][0]["date_of_birth"] == mock_customer_response.data[
             0
         ]["date_of_birth"].strftime(
             "%Y-%m-%d"
-        )  # noqa
+        )
 
         for field in response_json["data"][0]["accounts"][0].keys():
             assert response_json["data"][0]["accounts"][0][field] == getattr(
                 mock_customer_account_base.accounts[0], field
-            )  # noqa
+            )
 
     async def test_get_single_customer_success(
         self,
@@ -208,19 +208,19 @@ class TestCustomerRouter:
         for field in resp_customer_data_fields:
             assert (
                 response_json["data"][0][field] == mock_customer_response.data[0][field]
-            )  # noqa
+            )
 
         # Assert against the accounts returned in the customer record returned in datA
         for field in test_account_data.keys():
             assert (
                 response_json["data"][0]["accounts"][0][field]
                 == test_account_data[field]
-            )  # noqa
+            )
 
         assert (
             response_json["data"][0]["date_of_birth"]
             == test_customer_data["date_of_birth"]
-        )  # noqa
+        )
 
     async def test_get_single_customer_failure(
         self,
@@ -279,20 +279,20 @@ class TestCustomerRouter:
         for field in resp_customer_data_fields:
             assert (
                 response_json["data"][0][field] == mock_customer_response.data[0][field]
-            )  # noqa
+            )
 
         # Assert against the accounts returned in the customer record returned in datA
         for field in ["guid", "account_name", "status"]:
             assert (
                 response_json["data"][0]["accounts"][0][field]
                 == mock_customer_response.data[0]["accounts"][0][field]
-            )  # noqa
+            )
 
         assert response_json["data"][0]["date_of_birth"] == mock_customer_response.data[
             0
         ]["date_of_birth"].strftime(
             "%Y-%m-%d"
-        )  # noqa
+        )
 
     async def test_delete_customer_successful(
         self, mock_customer_service, client, mock_customer_response

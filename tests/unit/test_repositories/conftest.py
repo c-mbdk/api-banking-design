@@ -75,4 +75,4 @@ async def customer_in_memory_db(
     customer_repo = CustomerRepository(in_memory_db_client)
     new_customer = await customer_repo.create(customer_data, account_data)
 
-    return new_customer
+    return new_customer[0]

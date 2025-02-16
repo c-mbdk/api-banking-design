@@ -1,6 +1,8 @@
-from typing import Optional
+from typing import Annotated, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, StringConstraints
+
+from src.utils.regex_patterns import NAME_PATTERN
 
 
 class CustomerUpdate(BaseModel):
@@ -10,9 +12,10 @@ class CustomerUpdate(BaseModel):
     Used to serialise data sent in request for updating customer records.
     """
 
-    first_name: Optional[str] = None
-    middle_names: Optional[str] = None
-    last_name: Optional[str] = None
+    # first_name: Optional[str] = None
+    first_name: Annotated[Optional[str], StringConstraints(pattern=NAME_PATTERN, strict=True)] = None
+    middle_names: Annotated[Optional[str], StringConstraints(pattern=NAME_PATTERN, strict=True)] = None
+    last_name: Annotated[Optional[str], StringConstraints(pattern=NAME_PATTERN, strict=True)] = None
     phone_number: Optional[str] = None
     email_address: Optional[str] = None
     address: Optional[str] = None

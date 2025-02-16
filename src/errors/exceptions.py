@@ -24,5 +24,5 @@ class BaseException(Exception):
 
 class DBConfigError(BaseException):
     """Raised when db configuration fails."""
-    pass
 
+    pass

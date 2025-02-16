@@ -63,11 +63,11 @@ class CustomerRepository(AbstractAllRepository):
             new_account = Account(**account_data.model_dump())
             new_customer.accounts = [new_account]
 
-            session.add_all([new_customer, new_account])
+            session.add(new_customer)
             await session.commit()
             await session.refresh(new_customer)
 
-            return new_customer
+            return self.__map_customer_to_schema([new_customer])
 
     async def update(self, guid: str, data: CustomerUpdate) -> List[CustomerOutput]:
         """

@@ -1,11 +1,12 @@
 from datetime import date
+from typing import Annotated, Optional
 from uuid import uuid4
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, StringConstraints
 
 from src.schemas.common import CommonRestModelConfig
 from src.utils.constants import EXAMPLE_GUID_1, EXAMPLE_GUID_2
-from src.utils.regex_patterns import UUID4_PATTERN
+from src.utils.regex_patterns import NAME_PATTERN, UUID4_PATTERN
 
 
 class CustomerBase(BaseModel):
@@ -13,23 +14,24 @@ class CustomerBase(BaseModel):
     Base for the Customer Data Transfer Objects (DTOs).
     """
 
-    guid: str = Field(
+    guid: Annotated[str, StringConstraints(pattern=UUID4_PATTERN, strict=True)] = Field(
         default=uuid4(),
         description="Unique identifer for the customer record",
+        strict=True,
         examples=[EXAMPLE_GUID_1, EXAMPLE_GUID_2],
         json_schema_extra={"pattern": UUID4_PATTERN},
     )
-    first_name: str = Field(
+    first_name: Annotated[str, StringConstraints(pattern=NAME_PATTERN, strict=True)] = Field(
         ...,
         description="First name of the customer",
         examples=["Joe", "Jane"],
     )
-    middle_names: str = Field(
+    middle_names: Annotated[Optional[str], StringConstraints(pattern=NAME_PATTERN, strict=True)] = Field(
         default=None,
         description="Middle name of the customer",
         examples=["Andrew", "Anne"],
     )
-    last_name: str = Field(
+    last_name: Annotated[str, StringConstraints(pattern=NAME_PATTERN, strict=True)] = Field(
         ...,
         description="Last name (surname) of the customer",
         examples=["Doe", "Bloggs"],

@@ -317,21 +317,26 @@ class TestCustomerService:
         account_name = "Test Account 1213"
         account_status = AccountStatus.ACTIVE
 
-        mock_repo_output = Customer(
-            guid=customer_guid,
-            first_name=first_name,
-            middle_names=middle_names,
-            last_name=last_name,
-            email_address=email_address,
-            phone_number=phone_number,
-            date_of_birth=date_of_birth,
-            address=address,
-            accounts=[
-                Account(
-                    guid=account_guid, account_name=account_name, status=account_status
-                )
-            ],
-        )
+        mock_repo_output = [
+            CustomerOutput(
+                guid=customer_guid,
+                first_name=first_name,
+                middle_names=middle_names,
+                last_name=last_name,
+                date_of_birth=date_of_birth,
+                phone_number=phone_number,
+                email_address=email_address,
+                address=address,
+                accounts=[
+                    AccountOutput(
+                        guid=account_guid,
+                        account_name=account_name,
+                        status=account_status,
+                    )
+                ],
+            )
+        ]
+
         mock_customer_repository.create.return_value = mock_repo_output
 
         input_data = {
@@ -352,7 +357,7 @@ class TestCustomerService:
             "status_code": 201,
             "success": "true",
             "message": "Customer record created",
-            "data": [CustomerOutput(**mock_repo_output.model_dump()).model_dump_json()],
+            "data": [customer.model_dump_json() for customer in mock_repo_output],
         }
 
         new_customer_resp = await customer_service.create(

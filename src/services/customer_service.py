@@ -60,7 +60,7 @@ class CustomerService:
             status_code=CREATED,
             success=SUCCESS_TRUE,
             message=SUCCESS_CUSTOMER_CREATED,
-            data=[CustomerOutput(**customer.model_dump()).model_dump_json()],
+            data=[customer.model_dump_json() for customer in customer],
         )
 
     async def get_all(self) -> GenericResponseModel:

@@ -1,7 +1,7 @@
 # API Banking Design
 This application is for managing customers and accounts within a bank.The REST API interface was built using the FastAPI framework, utilising an SQLite database.
 
-**Tests:** The application has been tested using the pytest library. Currently, these are only unit tests, but these cover the repository layer, the service layer and the various controllers.
+**Tests:** The application has been tested using the pytest library. Currently, these are only unit and integration tests, but these cover the repository layer, the service layer and the various controllers.
 
 
 ## Features implemented
@@ -14,11 +14,11 @@ This application is for managing customers and accounts within a bank.The REST A
 ## Improvements
 1. Pagination for Customer and Accounts APIs.
 2. Add Transactions API.
-3. Integration tests
+3. E2E tests
 4. Add rate limiting.
 5. Add example requests to documentation.
 6. Add ability to update how statements are received.
-7. Add logs for 
+7. Add relevant logs for the various layers in the application.
 
 ## API Documentation
 1. Swagger Documentation is available at http://localhost:8080/docs when the application is run on port 8080.
@@ -58,5 +58,5 @@ poetry run uvicorn src.main:app --port 8080 --reload
 
 #### Run tests
 ```
-pytest
+poetry run pytest
 ```

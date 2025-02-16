@@ -7,7 +7,7 @@ repos:
       - id: check-yaml
   - repo: https://github.com/psf/black
     rev: 24.10.0
-    hooks: 
+    hooks:
       - id: black
         name: Format code with black
         entry: poetry run black

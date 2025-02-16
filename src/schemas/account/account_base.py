@@ -1,6 +1,7 @@
+from typing import Annotated
 from uuid import uuid4
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, StringConstraints
 
 from src.enums.account_status import AccountStatus
 from src.schemas.common import CommonRestModelConfig
@@ -13,11 +14,10 @@ class AccountBase(BaseModel):
     Base for Account Data Transfer Objects (DTOs).
     """
 
-    guid: str = Field(
-        default=uuid4(),
-        description="Unique identifer for the account record",
-        examples=[EXAMPLE_GUID_1, EXAMPLE_GUID_2],
-        json_schema_extra={"pattern": UUID4_PATTERN},
+    guid: Annotated[str, StringConstraints(pattern=UUID4_PATTERN, strict=True)] = Field(
+        description="Unique identifier for the account.",
+        examples=[EXAMPLE_GUID_1],
+        pattern=UUID4_PATTERN,
     )
     account_name: str = Field(
         ..., description="Name on the account", examples=["Doe FlexAccount"]
